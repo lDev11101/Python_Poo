@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+
 class BaseDeDatos:
 
     def __init__(self):
@@ -64,10 +65,79 @@ class BaseDeDatos:
                             promedio decimal not null
                         )"""
             )
-        except:
-            pass
+            print("La tabla 'estudiantes' se creo correctamente.")
+
+        except sqlite3.OperationalError:
+            print("La tabla de 'estudiantes' ya existe.")
+        finally:
+            self.cerrar()
+
+    # Método para insertar un estudiante
+    def insertar_estudiante(self, nombre, edad, promedio):
+        try:
+            self.conectar()
+            cur = self.conexion.cursor()
+            cur.execute(
+                "INSERT INTO estudiantes(nombre, edad, promedio) values(?,?,?)",
+                (nombre, edad, promedio),
+            )
+            self.conexion.commit()
+            print("Los datos se insertaron de manera correcta.")
+        except sqlite3.OperationalError:
+            print("Ocurrió un Error: Los datosno se insertaron correctamente")
+        finally:
+            self.cerrar()
+
+    # Método para obtener una lista de los estudiantes
+    def obtener_estudiantes(self):
+        try:
+            self.conectar()
+            cur = self.conexion.cursor()
+            cur.execute("SELECT * FROM estudiantes")
+            lis_estu = cur.fetchall()
+            for i in lis_estu:
+                print(i)
+        except sqlite3.OperationalError:
+            print("Ocurrió un Error: No se pudieron extraer los datos correctamente.")
+        finally:
+            self.cerrar()
+
+    # Método para poder actualizar el promedio de un estudiante por su ID
+    def actualizar_promedio(self, id_estudiante, nuevo_promedio):
+        try:
+            self.conectar()
+            cur = self.conexion.cursor()
+            cur.execute(
+                """UPDATE estudiantes set promedio=? WHERE id=?""",
+                (nuevo_promedio, id_estudiante),
+            )
+            self.conexion.commit()
+            print("Datos Actualizados correctamente")
+        except sqlite3.OperationalError:
+            print("Ocurrió un Error: No se pudo actualizar el promedio del alumno.")
+        finally:
+            self.cerrar()
+
+    # Método para eliminar un estudiante mediante su ID
+    def eliminar_estudiante(self, id_estudiante):
+        try:
+            self.conectar()
+            cur = self.conexion.cursor()
+            cur.execute("""DELETE FROM estudiantes WHERE id=?""", (id_estudiante,))
+            self.conexion.commit()
+            print("Dato eliminado correctamente")
+        except sqlite3.OperationalError:
+            print("Ocurrió un Error: No se pudo eliminar al alumno.")
+        finally:
+            self.cerrar()
 
 
 bd = BaseDeDatos()
-bd.conectar()
-bd.cerrar()
+# bd.conectar()
+# bd.cerrar()
+# bd.crear_tabla()
+# bd.obtener_estudiantes()
+# bd.actualizar_promedio(4, 20)
+# bd.obtener_estudiantes()
+# bd.eliminar_estudiante(4)
+# bd.obtener_estudiantes()

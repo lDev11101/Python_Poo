@@ -132,7 +132,54 @@ class BaseDeDatos:
             self.cerrar()
 
 
-bd = BaseDeDatos()
+class Estudiante:
+    def __init__(self, nombre, edad, promedio):
+        self.nombre = nombre
+        self.edad = edad
+        self.promedio = promedio
+
+    @property
+    def nombre(self):
+        return self._nombre
+
+    @nombre.setter
+    def nombre(self, valor):
+        if isinstance(valor, str) and valor.isalpha():
+            self._nombre = valor
+        else:
+            raise ValueError("El nombre debe ser una cadena de letras")
+
+    @property
+    def edad(self):
+        return self._edad
+
+    @edad.setter
+    def edad(self, valor):
+        if isinstance(valor, int) and valor > 0:
+            self._edad = valor
+        else:
+            raise ValueError("La edad debe ser un número entero positivo")
+
+    @property
+    def promedio(self):
+        return self._promedio
+
+    @promedio.setter
+    def promedio(self, valor):
+        if isinstance(valor, (int, float)) and 0 <= valor <= 20:
+            self._promedio = valor
+        else:
+            raise ValueError("El promedio debe estar entre 0 y 20")
+
+    def guardar_en_bd(self, base_de_datos):
+        """Guarda el estudiante en la base de datos"""
+        base_de_datos.insertar_estudiante(self.nombre, self.edad, self.promedio)
+
+    def mostrar_informacion(self):
+        return f"Nombre: {self.nombre}, Edad: {self.edad}, Promedio: {self.promedio}"
+
+
+# bd = BaseDeDatos()
 # bd.conectar()
 # bd.cerrar()
 # bd.crear_tabla()
